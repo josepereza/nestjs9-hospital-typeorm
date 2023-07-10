@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
@@ -6,7 +15,7 @@ import { UpdatePatientDto } from './dto/update-patient.dto';
 @Controller('patient')
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}
-  
+
   @Get('seed')
   seedPatient() {
     return this.patientService.seedPatient();
@@ -35,5 +44,13 @@ export class PatientController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.patientService.remove(+id);
+  }
+
+  @Post(':id/doctor')
+  createUserProfile(
+    @Param('id', ParseIntPipe) patientId: number,
+    @Body() doctorId: any,
+  ) {
+    return this.patientService.assignDoctor(patientId, doctorId);
   }
 }

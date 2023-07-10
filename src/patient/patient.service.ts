@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
 import { Patient } from './entities/patient.entity';
@@ -74,5 +74,25 @@ export class PatientService {
 
   remove(id: number) {
     return `This action removes a #${id} patient`;
+  }
+
+  // Asigna un doctor y devuelve los datos del paciente
+
+  async assignDoctor(patient_id, doctor_id) {
+    console.log(patient_id, doctor_id);
+    const paciente = await this.patientRepository.findOne({
+      where: { id: patient_id },
+      relations: { doctors: true },
+    });
+    console.log(paciente.name);
+    const doctor = await this.doctorRepository.findOne({
+      where: { id: doctor_id.doctorId },
+    });
+    console.log('patient-doctor', doctor.name);
+    paciente.doctors.push(doctor);
+    if (paciente && doctor) {
+      return await this.patientRepository.save(paciente);
+    }
+    throw new HttpException('Registros no encontrados', HttpStatus.NOT_FOUND);
   }
 }
