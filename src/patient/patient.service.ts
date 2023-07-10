@@ -51,8 +51,18 @@ export class PatientService {
     return '2 registros agregados';
   }
 
-  create(createPatientDto: CreatePatientDto) {
-    return 'This action adds a new patient';
+  async create(createPatientDto: CreatePatientDto) {
+    const { name, surname, dni } = createPatientDto;
+    const hospital = await this.hospitalRepository.findOne({
+      where: { id: createPatientDto.hospitalId },
+    });
+    const newPatient = this.patientRepository.create({
+      name,
+      surname,
+      dni,
+      hospital,
+    });
+    return this.patientRepository.save(newPatient);
   }
 
   findAll() {
