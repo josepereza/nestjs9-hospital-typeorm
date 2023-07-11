@@ -41,7 +41,8 @@ export class PatientController {
   update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto) {
     return this.patientService.update(+id, updatePatientDto);
   }
-
+ 
+  // actualizamos los doctores de un paciente
   @Post(':id/doctors')
   update2(@Param('id') id: string, @Body() doctors: Doctor[]) {
     return this.patientService.updateDoctors(+id, doctors);
