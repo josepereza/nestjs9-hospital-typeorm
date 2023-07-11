@@ -52,7 +52,7 @@ export class PatientService {
   }
 
   async create(createPatientDto: CreatePatientDto) {
-    const { name, surname, dni } = createPatientDto;
+    const { name, surname, dni, doctors } = createPatientDto;
     const hospital = await this.hospitalRepository.findOne({
       where: { id: createPatientDto.hospitalId },
     });
@@ -61,6 +61,7 @@ export class PatientService {
       surname,
       dni,
       hospital,
+      doctors,
     });
     return this.patientRepository.save(newPatient);
   }
@@ -75,11 +76,32 @@ export class PatientService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} patient`;
+    return this.patientRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        doctors: true,
+        hospital: true,
+      },
+    });
   }
 
   update(id: number, updatePatientDto: UpdatePatientDto) {
-    return `This action updates a #${id} patient`;
+    return this.patientRepository.update({ id }, { ...updatePatientDto });
+  }
+
+
+  //Esta parte aun no funciona.
+  async updateDoctors(id: number, doctors: Doctor[]) {
+    console.log(doctors);
+    const paciente = await this.patientRepository.findOne({
+      where: { id },
+      relations: { doctors: true, hospital: true },
+    });
+    paciente.doctors = doctors;
+
+    return await this.patientRepository.save(paciente);
   }
 
   remove(id: number) {

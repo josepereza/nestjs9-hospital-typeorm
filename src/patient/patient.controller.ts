@@ -11,6 +11,7 @@ import {
 import { PatientService } from './patient.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
+import { Doctor } from 'src/doctor/entities/doctor.entity';
 
 @Controller('patient')
 export class PatientController {
@@ -41,13 +42,18 @@ export class PatientController {
     return this.patientService.update(+id, updatePatientDto);
   }
 
+  @Post(':id/doctors')
+  update2(@Param('id') id: string, @Body() doctors: Doctor[]) {
+    return this.patientService.updateDoctors(+id, doctors);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.patientService.remove(+id);
   }
 
   @Post(':id/doctor')
-  createUserProfile(
+  assingDoctor(
     @Param('id', ParseIntPipe) patientId: number,
     @Body() doctorId: any,
   ) {
