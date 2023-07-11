@@ -91,15 +91,20 @@ export class PatientService {
     return this.patientRepository.update({ id }, { ...updatePatientDto });
   }
 
-
-  //Esta parte aun no funciona.
+  // Aqui actualizamos los doctores para un paciente.
   async updateDoctors(id: number, doctors: Doctor[]) {
-    console.log(doctors);
+    console.log('este es el array', doctors['doctors']);
+
+    for (const item in doctors) {
+      console.log(doctors[item]);
+    }
     const paciente = await this.patientRepository.findOne({
       where: { id },
       relations: { doctors: true, hospital: true },
     });
-    paciente.doctors = doctors;
+       
+    
+    paciente.doctors = doctors['doctors'];
 
     return await this.patientRepository.save(paciente);
   }
